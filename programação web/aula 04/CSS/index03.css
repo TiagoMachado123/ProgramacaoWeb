@@ -1,0 +1,48 @@
+
+.flex-container{
+    background-color: #000;
+    color: black;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 30%;
+    height: 500px;
+    padding-top: 50px;
+    overflow-y: scroll;
+}
+
+.flex-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 50px;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 20px;
+    box-shadow: 5px 6px 8px 6px white;
+}
+
+.flex-item:hover {
+    background-color: coral;
+    transform: scale(1.2);
+    box-shadow: 5px 6px 8px 6px coral;
+}
+
+.ipca{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    padding-bottom: 200px;
+}
+.scaling:hover{
+    color: green;
+    transform: scale(1,2);
+}
+.scaling{
+    font-size: 50px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}

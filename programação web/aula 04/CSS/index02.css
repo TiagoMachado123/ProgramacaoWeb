@@ -1,0 +1,32 @@
+.boxes-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.box{
+    background-color: red;
+    height: 75px;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box-1{
+    position: static;
+}
+.box-2{
+    position: relative;
+}
+.box-3{
+    position: fixed;
+}
+.box-4{
+    position: sticky;
+}
+.box-5{
+    position: absolute;
+}
+.box-6{
+    
+}
