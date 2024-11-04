@@ -1,0 +1,48 @@
+body{
+    
+}
+.restaurant-ferrugem-header{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+.map-image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#bebidas{
+    color: red;
+}
+.restaurant-logo-font{
+    font-family: 'Coca Cola ii', sans-serif;
+    font-size: 40px;
+}
+.restaurant-logo-font:hover{
+    transition:transform 0.3s ease;
+    transform: scale(1,1.1);
+    cursor: pointer
+}
+.card:hover {
+    transition: transform 0.3s ease;
+    transform: scale(1, 1.05 );
+    cursor: pointer;
+}
+
+.boxes{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.box{
+    max-width: 25%;
+    overflow-y: scroll;
+}
+.box-1{
+    
+}
