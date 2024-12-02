@@ -1,21 +1,86 @@
 <script>
   var carros = ["BMW", "Audi", "Mercedes"];
   var modelos = ["X1", "RS7", "AMG-GT"];
-
+  var precos = [100, 200, 300];
   function procurar() {
     var numero = parseInt(document.getElementById("numero1").value);
     if (numero >= 1 && numero <= carros.length) {
       var index = numero - 1;
       var marca = carros[index];
       var modelo = modelos[index];
+      var preco = precos[index];
       document.getElementById("resultado").textContent = marca + " " + modelo;
       document.getElementById("Marca").textContent = marca;
       document.getElementById("Modelo").textContent = modelo;
+      document.getElementById("Preco").textContent = preco;
     } else {
       document.getElementById("resultado").textContent = "Número inválido";
       document.getElementById("Marca").textContent = "";
       document.getElementById("Modelo").textContent = "";
+      document.getElementById("Preco").textContent = "";
     }
+  }
+
+  // HTML structure
+  var htmlContent = `
+  <div class="container">
+    <h2>Carros</h2>
+    <label>1 - BMW, 2 - Audi, 3 - Mercedes</label>
+    <input
+      type="number"
+      id="numero1"
+      placeholder="Index do carro"
+      min="1"
+      max="3"
+    />
+    <button onclick="procurar()">Procurar</button>
+    <div id="resultado"></div>
+
+    <table>
+      <tr>
+        <td>Marca</td>
+        <td>Modelo</td>
+        <td>Preço</td>
+      </tr>
+      <tr>
+        <td id="Marca"></td>
+        <td id="Modelo"></td>
+        <td id="Preco"></td>
+      </tr>
+    </table>
+  </div>
+`;
+
+  function insertHTML() {
+    document.body.innerHTML += htmlContent;
+  }
+  function insert_carros() {
+    var c = prompt("Marca"),
+      m = prompt("Modelo"),
+      p = parseFloat(prompt("Preco"));
+    if (c && m && !isNaN(p)) {
+      carros.push(c);
+      modelos.push(m);
+      precos.push(p);
+      alert("Carro adicionado com sucesso!");
+    } else {
+      alert("Dados inválidos. O carro não foi adicionado.");
+    }
+  }
+
+  function toggleProcurarCarro() {
+    var isToggledOn = false;
+    isToggledOn = !isToggledOn;
+    if (isToggledOn) {
+      insertHTML();
+    }else{
+        
+    }
+  }
+
+  function toggleNovoCarro() {
+    var isToggledOn = false;
+    isToggledOn = !isToggledOn;
   }
 </script>
 
@@ -27,30 +92,8 @@
     <title>Procurar Carros</title>
   </head>
   <body>
-    <div class="container">
-      <h2>Carros</h2>
-      <label>1 - BMW, 2 - Audi, 3 - Mercedes</label>
-      <input
-        type="number"
-        id="numero1"
-        placeholder="Index do carro"
-        min="1"
-        max="3"
-      />
-      <button onclick="procurar()">Procurar</button>
-      <div id="resultado"></div>
-
-      <table>
-        <tr>
-          <td>Marca</td>
-          <td>Modelo</td>
-        </tr>
-        <tr>
-          <td id="Marca"></td>
-          <td id="Modelo"></td>
-        </tr>
-      </table>
-    </div>
+    <button onclick="toggleProcurarCarro()">Procurar</button>
+    <button onclick="insert_carros()">Novo carro</button>
   </body>
 </html>
 
@@ -72,7 +115,9 @@
   }
   input,
   button {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 10px 0;
     padding: 5px;
   }
