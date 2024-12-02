@@ -1,0 +1,91 @@
+<script>
+  var carros = ["BMW", "Audi", "Mercedes"];
+  var modelos = ["X1", "RS7", "AMG-GT"];
+
+  function procurar() {
+    var numero = parseInt(document.getElementById("numero1").value);
+    if (numero >= 1 && numero <= carros.length) {
+      var index = numero - 1;
+      var marca = carros[index];
+      var modelo = modelos[index];
+      document.getElementById("resultado").textContent = marca + " " + modelo;
+      document.getElementById("Marca").textContent = marca;
+      document.getElementById("Modelo").textContent = modelo;
+    } else {
+      document.getElementById("resultado").textContent = "Número inválido";
+      document.getElementById("Marca").textContent = "";
+      document.getElementById("Modelo").textContent = "";
+    }
+  }
+</script>
+
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Procurar Carros</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Carros</h2>
+      <label>1 - BMW, 2 - Audi, 3 - Mercedes</label>
+      <input
+        type="number"
+        id="numero1"
+        placeholder="Index do carro"
+        min="1"
+        max="3"
+      />
+      <button onclick="procurar()">Procurar</button>
+      <div id="resultado"></div>
+
+      <table>
+        <tr>
+          <td>Marca</td>
+          <td>Modelo</td>
+        </tr>
+        <tr>
+          <td id="Marca"></td>
+          <td id="Modelo"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  .container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  input,
+  button {
+    display: block;
+    margin: 10px 0;
+    padding: 5px;
+  }
+  #resultado {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  table {
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+</style>
