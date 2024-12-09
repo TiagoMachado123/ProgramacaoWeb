@@ -21,8 +21,25 @@
     }
   }
 
-  // HTML structure
-  var htmlContent = `
+  function insert_carros() {
+    var c = prompt("Marca"),
+      m = prompt("Modelo"),
+      p = parseFloat(prompt("Preco"));
+    if (c && m && !isNaN(p)) {
+      carros.push(c);
+      modelos.push(m);
+      precos.push(p);
+      alert("Carro adicionado com sucesso!");
+    } else {
+      alert("Dados inválidos. O carro não foi adicionado.");
+    }
+  }
+
+  function toggleProcurarCarro() {
+    var isToggledOn = false;
+    isToggledOn = !isToggledOn;
+    if (isToggledOn) {
+      let showContainer = `
   <div class="container">
     <h2>Carros</h2>
     <label>1 - BMW, 2 - Audi, 3 - Mercedes</label>
@@ -50,31 +67,10 @@
     </table>
   </div>
 `;
-
-  function insertHTML() {
-    document.body.innerHTML += htmlContent;
-  }
-  function insert_carros() {
-    var c = prompt("Marca"),
-      m = prompt("Modelo"),
-      p = parseFloat(prompt("Preco"));
-    if (c && m && !isNaN(p)) {
-      carros.push(c);
-      modelos.push(m);
-      precos.push(p);
-      alert("Carro adicionado com sucesso!");
+document.body.innerHTML += showContainer;
     } else {
-      alert("Dados inválidos. O carro não foi adicionado.");
-    }
-  }
-
-  function toggleProcurarCarro() {
-    var isToggledOn = false;
-    isToggledOn = !isToggledOn;
-    if (isToggledOn) {
-      insertHTML();
-    }else{
-        
+      let showContainer ='';
+      document.body.innerHTML += showContainer;
     }
   }
 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Dias no Mês</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+      }
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #result {
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="dateForm">
+      <input
+        placeholder="Mês"
+        id="mes"
+        type="number"
+        min="0"
+        max="12"
+        required
+      />
+      <input
+        placeholder="Ano"
+        id="ano"
+        type="number"
+        min="1900"
+        max="2100"
+        required
+      />
+      <button type="submit">Calcular</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+      function isAnoBissexto(ano) {
+        return (ano % 4 === 0 && ano % 100 !== 0) || ano % 400 === 0;
+      }
+
+      function getDiasNoMes(mes, ano) {
+        switch (mes) {
+          case 1:
+          case 3:
+          case 5:
+          case 7:
+          case 8:
+          case 10:
+          case 12:
+            return 31;
+          case 4:
+          case 6:
+          case 9:
+          case 11:
+            return 30;
+          case 2:
+            return isAnoBissexto(ano) ? 29 : 28;
+          case 0:
+            return;
+          default:
+            return -1;
+        }
+      }
+
+      const nomesDosMeses = {
+        1: "Janeiro",
+        2: "Fevereiro",
+        3: "Março",
+        4: "Abril",
+        5: "Maio",
+        6: "Junho",
+        7: "Julho",
+        8: "Agosto",
+        9: "Setembro",
+        10: "Outubro",
+        11: "Novembro",
+        12: "Dezembro",
+      };
+      document
+        .getElementById("dateForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const mes = parseInt(document.getElementById("mes").value);
+          const ano = parseInt(document.getElementById("ano").value);
+
+          if (mes >= 0 && mes <= 12 && ano >= 1900 && ano <= 2100) {
+            const dias = getDiasNoMes(mes, ano);
+            const nomeMes = nomesDosMeses[mes];
+            const bissexto = isAnoBissexto(ano) ? " (Ano Bissexto)" : "";
+            document.getElementById(
+              "result"
+            ).textContent = `${nomeMes} de ${ano}${bissexto} tem ${dias} dias.`;
+          } else {
+            document.getElementById("result").textContent =
+              "Por favor, insira um mês válido (1-12) e um ano válido (1900-2100).";
+          }
+        });
+    </script>
+  </body>
+</html>

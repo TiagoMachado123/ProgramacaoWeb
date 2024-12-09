@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Headers e Tabela Interativos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        select, button {
+            margin: 10px;
+            padding: 5px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <select id="headerSelect">
+        <option value="all">Todos os Headers</option>
+        <option value="1">Header 1</option>
+        <option value="2">Header 2</option>
+        <option value="3">Header 3</option>
+    </select>
+
+    <select id="colorSelect">
+        <option value="black">Preto</option>
+        <option value="red">Vermelho</option>
+        <option value="blue">Azul</option>
+        <option value="green">Verde</option>
+        <option value="purple">Roxo</option>
+    </select>
+
+    <div class="content">
+        <h1>Primeiro Cabeçalho</h1>
+        <h1>Segundo Cabeçalho</h1>
+        <h1>Terceiro Cabeçalho</h1>
+    </div>
+
+    <table id="myTable">
+        <thead>
+            <tr>
+                <th>Coluna 1</th>
+                <th>Coluna 2</th>
+                <th>Coluna 3</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button onclick="addLine()">Adicionar Linha</button>
+
+    <script>
+        document.getElementById('colorSelect').addEventListener('change', function() {
+            const color = this.value;
+            const headerSelect = document.getElementById('headerSelect').value;
+            const headers = document.getElementsByTagName('h1');
+            
+            if(headerSelect === 'all') {
+                for(let header of headers) {
+                    header.style.color = color;
+                }
+            } else {
+                const index = parseInt(headerSelect) - 1;
+                if(headers[index]) {
+                    headers[index].style.color = color;
+                }
+            }
+        });
+
+        let rowCount = 1;
+        function addLine() {
+            const tbody = document.querySelector('#myTable tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>Dado ${rowCount}.1</td>
+                <td>Dado ${rowCount}.2</td>
+                <td>Dado ${rowCount}.3</td>
+            `;
+            tbody.appendChild(newRow);
+            rowCount++;
+        }
+    </script>
+</body>
+</html>
