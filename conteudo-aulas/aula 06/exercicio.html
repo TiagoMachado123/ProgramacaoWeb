@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <head>
     <title>Headers e Tabela Interativos</title>
@@ -108,4 +108,94 @@
       }
     </script>
   </body>
+</html> -->
+https://dontpad.com/06012025-pw1
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        var x=0;
+        function dias(m,a){
+        var ndias,mes_extenso;
+        mes_extenso='teste';
+
+        switch (m) {
+        case 1:
+            ndias=31; 
+            mes_extenso='Janeiro';        	 
+        break;
+        case 2: if (a%4==0) {ndias=29} else {ndias=28};
+                mes_extenso='Fevereiro';
+            break;
+        case 3:
+            ndias=31; 
+            mes_extenso='Março';   
+        break;
+        case 4:
+            ndias=31; 
+            mes_extenso='Abril'; 
+        default:
+                // code block
+        }
+        return 'Mes:'+mes_extenso+';Dias:'+ndias;
+        }
+
+
+    function menu(){
+/*
+            do {
+                a=prompt('Ano');
+                m=prompt('mes') ;           
+                alert(dias(parseInt(m),a));
+            } while (m!=0);
+
+        var parag=document.getElementsByTagName('h1');
+             for (var i=0; i<parag.length; i++){
+                    parag[i].style.color=document.getElementById('idcolors').value;
+                }
+                    
+*/      parag=document.getElementsByTagName('h1');
+        i=document.getElementById('idlinhas').value;
+        parag[parseInt(i)-1].style.color=document.getElementById('idcolors').value;
+        parag[parseInt(i)-1].innerHTML=document.getElementById('idcolors').selectedindex;
+    }
+
+        function insere_linha(){
+            tabela=document.getElementById('tabela');
+            linha=tabela.insertRow(-1);
+            celula=linha.insertCell(-1);
+            x++;
+            celula.innerHTML=x;
+        
+        }
+    </script>
+</head>
+<body>
+    <button onclick=menu()>Clicar</button>
+    <select name="colors" id="idcolors" onchange=menu()>
+        <option value="red">Vermelho</option>
+        <option value="blue">Azul</option>
+        <option value="green">Verde</option>
+    </select>
+    <select name="colors" id="idlinhas" onchange=menu()>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+    <h1>header1</h1>
+    <h1>header2</h1>
+    <h1>header3</h1>
+
+    <button onclick=insere_linha()>insere linha</button>
+<table style="border-style: dotted;" id="tabela">
+    <tr><th>Id</th></tr>
+
+</table>
+
+</body>
 </html>

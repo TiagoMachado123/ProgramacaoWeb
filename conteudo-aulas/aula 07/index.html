@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="index.css">
+<head>
+</head>
+<body>
+  <div id="controlPanel">
+    <label for="contentType">Tipo de Conteúdo:</label>
+    <select id="contentType" onchange="changeContent(this.value)">
+      <option value="clock">Relógio</option>
+      <option value="color">Cor Sólida</option>
+      <option value="emoji">Emoji</option>
+      <option value="pattern">Padrão</option>
+    </select>
+
+    <label for="styleOption">Estilo:</label>
+    <select id="styleOption" onchange="updateStyle(this.value)">
+      <!-- Opções serão preenchidas via JavaScript -->
+    </select>
+  </div>
+
+  <div class="container">
+    <div class="box" id="movableBox">
+      <div class="clock">
+        <div class="hand hour-hand" id="hourHand"></div>
+        <div class="hand minute-hand" id="minuteHand"></div>
+        <div class="hand second-hand" id="secondHand"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info">
+    Controles:<br>
+    ↑↓←→: Mover caixa<br>
+    + ou =: Aumentar tamanho<br>
+    -: Diminuir tamanho
+  </div>
+
+  <script>
+    const box = document.getElementById('movableBox');
+    const contentTypeSelect = document.getElementById('contentType');
+    const styleOptionSelect = document.getElementById('styleOption');
+    
+    let posX = window.innerWidth / 2 - 50;
+    let posY = window.innerHeight / 2 - 50;
+    const speed = 10;
+
+    // Definir posição inicial
+    box.style.left = posX + 'px';
+    box.style.top = posY + 'px';
+
+    // Opções disponíveis para cada tipo de conteúdo
+    const options = {
+      clock: {
+        'classic': { background: 'white', border: 'black' },
+        'dark': { background: '#333', border: 'white' },
+        'blue': { background: '#3498db', border: 'white' },
+        'gold': { background: '#ffd700', border: 'black' }
+      },
+      color: {
+        '#3498db': 'Azul',
+        '#e74c3c': 'Vermelho',
+        '#2ecc71': 'Verde',
+        '#f1c40f': 'Amarelo',
+        '#9b59b6': 'Roxo',
+        '#34495e': 'Cinza Escuro'
+      },
+      emoji: {
+        '😊': 'Sorriso',
+        '🌟': 'Estrela',
+        '🎨': 'Paleta',
+        '🎮': 'Joystick',
+        '🌈': 'Arco-íris'
+      },
+      pattern: {
+        'dots': 'radial-gradient(circle at 2px 2px, black 1px, transparent 2px)',
+        'lines': 'repeating-linear-gradient(0deg, black 0, black 1px, transparent 1px, transparent 10px)',
+        'grid': 'repeating-linear-gradient(0deg, black 0, black 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, black 0, black 1px, transparent 1px, transparent 20px)',
+        'diagonal': 'repeating-linear-gradient(45deg, black 0, black 1px, transparent 1px, transparent 10px)'
+      }
+    };
+
+    // Atualiza as opções de estilo baseado no tipo de conteúdo
+    function updateStyleOptions(contentType) {
+      styleOptionSelect.innerHTML = '';
+      const currentOptions = options[contentType];
+      
+      for (let key in currentOptions) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = contentType === 'color' ? currentOptions[key] : key;
+        styleOptionSelect.appendChild(option);
+      }
+    }
+
+    // Atualiza o relógio
+    function updateClock() {
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours() % 12;
+
+      const hourHand = document.getElementById('hourHand');
+      const minuteHand = document.getElementById('minuteHand');
+      const secondHand = document.getElementById('secondHand');
+
+      if (hourHand && minuteHand && secondHand) {
+        const secondDeg = (seconds * 6) + 180;
+        const minuteDeg = (minutes * 6 + seconds * 0.1) + 180;
+        const hourDeg = (hours * 30 + minutes * 0.5) + 180;
+
+        secondHand.style.transform = `rotate(${secondDeg}deg)`;
+        minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+      }
+    }
+
+    // Mudar o conteúdo da caixa
+    function changeContent(type) {
+      updateStyleOptions(type);
+      
+      switch(type) {
+        case 'clock':
+          box.innerHTML = `
+            <div class="clock">
+              <div class="hand hour-hand" id="hourHand"></div>
+              <div class="hand minute-hand" id="minuteHand"></div>
+              <div class="hand second-hand" id="secondHand"></div>
+            </div>`;
+          break;
+        case 'emoji':
+          box.innerHTML = `<div style="font-size: 50px;">😊</div>`;
+          break;
+        default:
+          box.innerHTML = '';
+      }
+      
+      updateStyle(styleOptionSelect.value);
+    }
+
+    // Atualizar o estilo baseado na seleção
+    function updateStyle(value) {
+      const type = contentTypeSelect.value;
+      
+      switch(type) {
+        case 'clock':
+          const clockStyle = options.clock[value];
+          const clock = box.querySelector('.clock');
+          if (clock) {
+            clock.style.background = clockStyle.background;
+            clock.style.borderColor = clockStyle.border;
+          }
+          break;
+        case 'color':
+          box.style.background = value;
+          box.innerHTML = '';
+          break;
+        case 'emoji':
+          box.innerHTML = `<div style="font-size: 50px;">${value}</div>`;
+          break;
+        case 'pattern':
+          box.style.background = 'white';
+          box.style.backgroundImage = options.pattern[value];
+          box.innerHTML = '';
+          break;
+      }
+    }
+
+    // Mudar tamanho da caixa
+    function changeSize(value) {
+      const currentWidth = parseInt(getComputedStyle(box).width);
+      const newSize = Math.max(100, Math.min(300, currentWidth + value));
+      box.style.width = newSize + 'px';
+      box.style.height = newSize + 'px';
+    }
+
+    // Controles de teclado
+    document.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case 'ArrowLeft':
+          posX = Math.max(0, posX - speed);
+          box.style.left = posX + 'px';
+          break;
+        case 'ArrowRight':
+          posX = Math.min(window.innerWidth - box.offsetWidth, posX + speed);
+          box.style.left = posX + 'px';
+          break;
+        case 'ArrowUp':
+          posY = Math.max(0, posY - speed);
+          box.style.top = posY + 'px';
+          break;
+        case 'ArrowDown':
+          posY = Math.min(window.innerHeight - box.offsetHeight, posY + speed);
+          box.style.top = posY + 'px';
+          break;
+        case '+':
+        case '=':
+          changeSize(20);
+          break;
+        case '-':
+          changeSize(-20);
+          break;
+      }
+    });
+
+    // Inicializar
+    setInterval(updateClock, 1000);
+    updateClock();
+    updateStyleOptions('clock');
+  </script>
+</body>
+</html>
