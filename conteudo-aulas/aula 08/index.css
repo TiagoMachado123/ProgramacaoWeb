@@ -1,0 +1,12 @@
+.wrapped-carousel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.carousel-item img {
+  height: 300px;
+  object-fit: cover;
+}
+.menu-item {
+  margin-bottom: 20px;
+}
