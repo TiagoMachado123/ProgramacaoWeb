@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Salário Líquido 2025 - Portugal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .input-transition {
+            transition: all 0.3s ease;
+        }
+
+        .input-transition:focus {
+            transform: scale(1.02);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <!-- Modern Navbar -->
+    <nav class="glass-effect sticky top-0 z-50 border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600" data-pt="Simulador Salarial PT" data-en="PT Salary Simulator">Simulador Salarial PT</span>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <select id="languageSelect" class="bg-white/90 text-gray-700 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all">
+                        <option value="pt">🇵🇹 Português</option>
+                        <option value="en">🇬🇧 English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600" data-pt="Simulador de Salário 2025" data-en="Salary Calculator 2025">
+                Simulador de Salário 2025
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto" data-pt="Calcule o seu salário líquido com precisão e facilidade" data-en="Calculate your net salary with precision and ease">
+                Calcule o seu salário líquido com precisão e facilidade
+            </p>
+        </div>
+
+        <!-- Calculator Card -->
+        <div class="glass-effect rounded-2xl shadow-xl p-8 mb-12 card-hover">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800" data-pt="Calculadora Salarial" data-en="Salary Calculator">
+                    Calculadora Salarial
+                </h2>
+                <button id="exportPDF" class="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full hover:shadow-lg transition-all">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span data-pt="Exportar PDF" data-en="Export PDF">Exportar PDF</span>
+                </button>
+            </div>
+
+            <form id="salarioForm" class="space-y-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <!-- Salary Input -->
+                        <div class="relative">
+                            <label for="salarioBruto" class="block text-sm font-medium text-gray-700 mb-2" data-pt="Salário Bruto Mensal" data-en="Monthly Gross Salary">
+                                Salário Bruto Mensal
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="salarioBruto" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 input-transition">
+                                <span class="absolute right-4 top-3 text-gray-500">€</span>
+                            </div>
+                        </div>
+
+                        <!-- Tax Status -->
+                        <div>
+                            <label for="situacao" class="block text-sm font-medium text-gray-700 mb-2" data-pt="Situação Fiscal" data-en="Tax Status">
+                                Situação Fiscal
+                            </label>
+                            <select id="situacao"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 input-transition">
+                                <option value="solteiro" data-pt="Solteiro" data-en="Single">Solteiro</option>
+                                <option value="casado1" data-pt="Casado (1 titular)" data-en="Married (1 earner)">Casado (1 titular)</option>
+                                <option value="casado2" data-pt="Casado (2 titulares)" data-en="Married (2 earners)">Casado (2 titulares)</option>
+                            </select>
+                        </div>
+
+                        <!-- Dependents -->
+                        <div>
+                            <label for="dependentes" class="block text-sm font-medium text-gray-700 mb-2" data-pt="Número de Dependentes" data-en="Number of Dependents">
+                                Número de Dependentes
+                            </label>
+                            <input type="number" id="dependentes" min="0" value="0"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 input-transition">
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4" data-pt="Informações de Cálculo" data-en="Calculation Information">
+                            Informações de Cálculo
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-gray-600" data-pt="Segurança Social: 11% do salário bruto" data-en="Social Security: 11% of gross salary">
+                                    Segurança Social: 11% do salário bruto
+                                </span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-gray-600" data-pt="IRS: Taxa progressiva entre 10% e 35%" data-en="Income Tax: Progressive rate between 10% and 35%">
+                                    IRS: Taxa progressiva entre 10% e 35%
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-lg hover:shadow-lg transition-all text-lg font-medium">
+                    <span data-pt="Calcular Salário Líquido" data-en="Calculate Net Salary">Calcular Salário Líquido</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultadoContainer" class="glass-effect rounded-2xl shadow-xl p-8 mb-12 hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6" data-pt="Resultado da Simulação" data-en="Simulation Result">
+                Resultado da Simulação
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div id="resultado" class="space-y-4"></div>
+                    <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                        <h3 class="font-semibold text-gray-700 mb-4" data-pt="Resumo Anual" data-en="Annual Summary">Resumo Anual</h3>
+                        <div id="resumoAnual" class="text-sm text-gray-600"></div>
+                    </div>
+                </div>
+                <div>
+                    <canvas id="salarioChart" class="w-full"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+      <section id="objectives" class="mb-12 max-w-6xl mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            Objetivos Financeiros
+          </h2>
+
+          <form id="objectivesForm" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label for="objectiveValue" class="block text-sm font-medium text-gray-700 mb-1">
+                  Valor do Objetivo (€)
+                </label>
+                <input
+                  type="number"
+                  id="objectiveValue"
+                  min="0"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label for="dependentes" class="block text-sm font-medium text-gray-700 mb-1">
+                  Poupança Mensal (€)
+                </label>
+                <input
+                  type="number"
+                  id="monthlySavings"
+                  min="0"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            >
+              Calcular Tempo para Objetivo
+            </button>
+          </form>
+
+          <div id="objectiveResult" class="mt-6 hidden">
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <h3 class="font-semibold text-blue-800 mb-2">
+                Resultado da Simulação
+              </h3>
+              <div id="objectiveCalculation" class="text-blue-900"></div>
+              <div class="mt-4">
+                <canvas id="savingsProgressChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comparador de Profissões Section -->
+      <section id="career" class="mb-12 max-w-6xl mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            Comparador de Profissões
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                Salários Médios por Profissão
+              </h3>
+              <div class="space-y-2">
+                <div class="flex justify-between p-2 bg-gray-50 rounded">
+                  <span>Desenvolvedor Senior</span>
+                  <span class="font-medium">45.000€/ano</span>
+                </div>
+                <div class="flex justify-between p-2 bg-gray-50 rounded">
+                  <span>Gerente de Projeto</span>
+                  <span class="font-medium">42.000€/ano</span>
+                </div>
+                <div class="flex justify-between p-2 bg-gray-50 rounded">
+                  <span>Designer UX/UI</span>
+                  <span class="font-medium">35.000€/ano</span>
+                </div>
+                <!-- Add more professions -->
+              </div>
+            </div>
+            <div>
+              <canvas id="careerProgressionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quiz Financeiro Section -->
+      <section id="quiz" class="mb-12 max-w-6xl mx-auto p-6">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Quiz Financeiro</h2>
+
+          <div id="quizContainer" class="space-y-6">
+            <div id="quizQuestion" class="p-4 bg-blue-50 rounded-lg">
+              <h3 class="font-semibold text-blue-800 mb-3">Pergunta 1:</h3>
+              <p class="text-gray-700 mb-4">
+                Qual é a taxa base de Segurança Social para trabalhadores por
+                conta de outrem em Portugal?
+              </p>
+              <div class="space-y-2">
+                <button
+                  class="w-full text-left p-2 rounded border hover:bg-blue-100"
+                  onclick="checkAnswer(1, 0)"
+                >
+                  a) 9%
+                </button>
+                <button
+                  class="w-full text-left p-2 rounded border hover:bg-blue-100"
+                  onclick="checkAnswer(1, 1)"
+                >
+                  b) 11%
+                </button>
+                <button
+                  class="w-full text-left p-2 rounded border hover:bg-blue-100"
+                  onclick="checkAnswer(1, 2)"
+                >
+                  c) 13%
+                </button>
+                <button
+                  class="w-full text-left p-2 rounded border hover:bg-blue-100"
+                  onclick="checkAnswer(1, 3)"
+                >
+                  d) 15%
+                </button>
+              </div>
+            </div>
+            <div id="quizResult" class="hidden p-4 rounded-lg"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Info Section -->
+      <section id="info" class="mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            Entenda os Impostos e Deduções
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                Escalões de IRS 2025
+              </h3>
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                      >
+                        Rendimento
+                      </th>
+                      <th
+                        class="px-4 py-2 text-left text-sm font-medium text-gray-500"
+                      >
+                        Taxa
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="px-4 py-2">Até 1000€</td>
+                      <td class="px-4 py-2">10%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">1001€ - 2000€</td>
+                      <td class="px-4 py-2">20%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">2001€ - 3000€</td>
+                      <td class="px-4 py-2">30%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-4 py-2">Mais de 3000€</td>
+                      <td class="px-4 py-2">35%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                Segurança Social
+              </h3>
+              <div class="space-y-4">
+                <p class="text-gray-600">
+                  A taxa de Segurança Social é de 11% para trabalhadores por
+                  conta de outrem. Esta contribuição é obrigatória e garante
+                  proteção em situações como:
+                </p>
+                <ul class="list-disc pl-5 text-gray-600 space-y-2">
+                  <li>Desemprego</li>
+                  <li>Doença</li>
+                  <li>Parentalidade</li>
+                  <li>Reforma</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section id="faq" class="mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            Perguntas Frequentes
+          </h2>
+
+          <div class="space-y-4">
+            <div class="border-b pb-4">
+              <h3 class="text-lg font-medium text-gray-800 mb-2">
+                Como é calculado o salário líquido?
+              </h3>
+              <p class="text-gray-600">
+                O salário líquido é calculado subtraindo do salário bruto as
+                contribuições para a Segurança Social e o IRS. O valor final
+                depende da sua situação fiscal e número de dependentes.
+              </p>
+            </div>
+
+            <div class="border-b pb-4">
+              <h3 class="text-lg font-medium text-gray-800 mb-2">
+                O que são titulares para efeitos de IRS?
+              </h3>
+              <p class="text-gray-600">
+                No caso de casais, podem optar por tributação conjunta (1
+                titular) ou separada (2 titulares). A opção por 2 titulares pode
+                resultar em benefícios fiscais em certas situações.
+              </p>
+            </div>
+
+            <div class="border-b pb-4">
+              <h3 class="text-lg font-medium text-gray-800 mb-2">
+                Como funcionam as deduções por dependentes?
+              </h3>
+              <p class="text-gray-600">
+                Cada dependente permite uma dedução fixa mensal no IRS. Esta
+                dedução é aplicada antes do cálculo final do imposto, reduzindo
+                o valor a pagar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center">
+          <p class="text-gray-400">
+            Este simulador é apenas uma ferramenta de cálculo aproximado. Para
+            informações oficiais, consulte o Portal das Finanças.
+          </p>
+          <p class="text-sm mt-2">© 2025 Simulador Salarial PT - Versão 2.0</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      let salarioChart = null;
+
+      document
+        .getElementById("salarioForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const salarioBruto = parseFloat(
+            document.getElementById("salarioBruto").value
+          );
+          const situacao = document.getElementById("situacao").value;
+          const dependentes = parseInt(
+            document.getElementById("dependentes").value
+          );
+
+          // Cálculos
+          const ss = salarioBruto * 0.11;
+          let irs = 0;
+
+          // Cálculo do IRS com escalões mais detalhados
+          if (salarioBruto <= 1000) {
+            irs = salarioBruto * 0.1;
+          } else if (salarioBruto <= 2000) {
+            irs = 1000 * 0.1 + (salarioBruto - 1000) * 0.2;
+          } else if (salarioBruto <= 3000) {
+            irs = 1000 * 0.1 + 1000 * 0.2 + (salarioBruto - 2000) * 0.3;
+          } else {
+            irs =
+              1000 * 0.1 +
+              1000 * 0.2 +
+              1000 * 0.3 +
+              (salarioBruto - 3000) * 0.35;
+          }
+
+          // Ajustes familiares
+          if (situacao === "casado2") {
+            irs *= 0.9;
+          }
+          irs -= dependentes * 20;
+          irs = Math.max(0, irs);
+
+          const salarioLiquido = salarioBruto - ss - irs;
+
+          // Atualiza o resultado
+          document.getElementById("resultado").innerHTML = `
+                <div class="flex justify-between items-center py-2 border-b">
+                    <span class="text-gray-600">Salário Bruto:</span>
+                    <span class="font-semibold">${salarioBruto.toFixed(
+                      2
+                    )}€</span>
+                </div>
+<div class="flex justify-between items-center py-2 border-b">
+                    <span class="text-gray-600">Segurança Social (11%):</span>
+                    <span class="font-semibold text-red-600">-${ss.toFixed(
+                      2
+                    )}€</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b">
+                    <span class="text-gray-600">IRS:</span>
+                    <span class="font-semibold text-red-600">-${irs.toFixed(
+                      2
+                    )}€</span>
+                </div>
+                <div class="flex justify-between items-center py-2 mt-2 bg-gray-50 p-2 rounded">
+                    <span class="text-gray-800 font-medium">Salário Líquido:</span>
+                    <span class="font-bold text-green-600 text-xl">${salarioLiquido.toFixed(
+                      2
+                    )}€</span>
+                </div>
+            `;
+
+          // Atualiza o resumo anual
+          const anual = {
+            bruto: salarioBruto * 14, // Inclui subsídios
+            ss: ss * 14,
+            irs: irs * 14,
+            liquido: salarioLiquido * 14,
+          };
+
+          document.getElementById("resumoAnual").innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>Rendimento Anual Bruto:</span>
+                        <span class="font-medium">${anual.bruto.toFixed(
+                          2
+                        )}€</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Segurança Social Anual:</span>
+                        <span class="font-medium text-red-600">-${anual.ss.toFixed(
+                          2
+                        )}€</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>IRS Anual:</span>
+                        <span class="font-medium text-red-600">-${anual.irs.toFixed(
+                          2
+                        )}€</span>
+                    </div>
+                    <div class="flex justify-between pt-2 border-t">
+                        <span>Rendimento Anual Líquido:</span>
+                        <span class="font-medium text-green-600">${anual.liquido.toFixed(
+                          2
+                        )}€</span>
+                    </div>
+                </div>
+            `;
+
+          // Mostra o container de resultados
+          document
+            .getElementById("resultadoContainer")
+            .classList.remove("hidden");
+
+          // Atualiza o gráfico
+          updateChart(salarioBruto, ss, irs, salarioLiquido);
+        });
+
+        $(document).ready(function() {
+    // Initialize GSAP animations
+    gsap.from(".hero-title", {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        ease: "power3.out"
+    });
+
+    // Language switching functionality
+    $('#languageSelect').change(function() {
+        const lang = $(this).val();
+        gsap.to("[data-" + lang + "]", {
+            duration: 0.5,
+            opacity: 0,
+            y: -10,
+            stagger: 0.05,
+            onComplete: function() {
+                $('[data-' + lang + ']').each(function() {
+                    $(this).text($(this).data(lang));
+                });
+                gsap.to("[data-" + lang + "]", {
+                    duration: 0.5,
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.05
+                });
+            }
+        });
+        
+        $('html').attr('lang', lang);
+        updateDynamicContent(lang);
+    });
+
+    // Form submission with animations
+    $('#salarioForm').submit(function(e) {
+        e.preventDefault();
+        
+        // Calculate salary (implement your calculation logic here)
+        // For example:
+        // const grossSalary = parseFloat($('#grossSalary').val());
+        // const netSalary = calculateNetSalary(grossSalary);
+        
+        // Show results with animation
+        $('#resultadoContainer').removeClass('hidden');
+        gsap.from("#resultadoContainer", {
+            duration: 0.8,
+            y: 30,
+            opacity: 0,
+            ease: "power3.out"
+        });
+    });
+
+    // PDF Export with loading animation
+    $('#exportPDF').click(function() {
+        const button = $(this);
+        button.prop('disabled', true);
+        button.html('<svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24"></svg>Gerando PDF...');
+        
+        const element = document.getElementById('resultadoContainer');
+        const pdfOptions = {
+            margin: 1,
+            filename: 'salary-calculation.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(element).set(pdfOptions).save().then(() => {
+            button.prop('disabled', false);
+            button.html('Exportar PDF');
+        });
+    });
+});
+
+// Add translation object for dynamic content
+const translations = {
+    pt: {
+        salaryCalculation: "Cálculo de Salário",
+        grossSalary: "Salário Bruto",
+        netSalary: "Salário Líquido",
+        socialSecurity: "Segurança Social",
+        // Add more translations as needed
+    },
+    en: {
+        salaryCalculation: "Salary Calculation",
+        grossSalary: "Gross Salary",
+        netSalary: "Net Salary",
+        socialSecurity: "Social Security",
+        // Add more translations as needed
+    }
+};
+
+// Function to update dynamic content
+function updateDynamicContent(lang) {
+    const t = translations[lang];
+    // Update dynamic content using the translations object
+    $('#salaryCalculationTitle').text(t.salaryCalculation);
+    $('#grossSalaryLabel').text(t.grossSalary);
+    $('#netSalaryLabel').text(t.netSalary);
+    $('#socialSecurityLabel').text(t.socialSecurity);
+    // Add more updates for other dynamic content
+}
+
+
+      document
+        .getElementById("objectivesForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const objectiveValue = parseFloat(
+            document.getElementById("objectiveValue").value
+          );
+          const monthlySavings = parseFloat(
+            document.getElementById("monthlySavings").value
+          );
+
+          const monthsToGoal = Math.ceil(objectiveValue / monthlySavings);
+          const yearsToGoal = (monthsToGoal / 12).toFixed(1);
+
+          document.getElementById("objectiveCalculation").innerHTML = `
+                <p>Com uma poupança mensal de ${monthlySavings}€, você alcançará seu objetivo de ${objectiveValue}€ em:</p>
+                <p class="text-xl font-bold mt-2">${monthsToGoal} meses (${yearsToGoal} anos)</p>
+            `;
+
+          document.getElementById("objectiveResult").classList.remove("hidden");
+          updateSavingsChart(objectiveValue, monthlySavings, monthsToGoal);
+        });
+
+      function updateSavingsChart(goal, monthly, months) {
+        const ctx = document
+          .getElementById("savingsProgressChart")
+          .getContext("2d");
+        const labels = Array.from({ length: months }, (_, i) => `Mês ${i + 1}`);
+        const data = Array.from(
+          { length: months },
+          (_, i) => monthly * (i + 1)
+        );
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Progresso da Poupança",
+                data: data,
+                borderColor: "rgb(59, 130, 246)",
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: "Progresso para o Objetivo",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: (value) => value + "€",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Career Progression Chart
+      function initCareerChart() {
+        const ctx = document
+          .getElementById("careerProgressionChart")
+          .getContext("2d");
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["Entrada", "2 anos", "5 anos", "8 anos", "10 anos"],
+            datasets: [
+              {
+                label: "Progressão Salarial Típica",
+                data: [25000, 32000, 45000, 60000, 75000],
+                borderColor: "rgb(34, 197, 94)",
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: "Progressão Salarial ao Longo do Tempo",
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: (value) => value + "€",
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Quiz functionality
+      let quizScore = 0;
+      const correctAnswers = [1]; // Array with correct answer indexes
+
+      function checkAnswer(questionNumber, answerIndex) {
+        const resultDiv = document.getElementById("quizResult");
+        const isCorrect = correctAnswers[questionNumber - 1] === answerIndex;
+
+        if (isCorrect) {
+          quizScore++;
+          resultDiv.classList.remove("bg-red-50");
+          resultDiv.classList.add("bg-green-50");
+          resultDiv.innerHTML = `
+                    <p class="text-green-800 font-medium">Correto! A taxa base de Segurança Social é 11%.</p>
+                    <p class="text-gray-600 mt-2">Esta taxa é aplicada ao salário bruto e é uma contribuição obrigatória.</p>
+                `;
+        } else {
+          resultDiv.classList.remove("bg-green-50");
+          resultDiv.classList.add("bg-red-50");
+          resultDiv.innerHTML = `
+                    <p class="text-red-800 font-medium">Incorreto. A resposta certa é 11%.</p>
+                    <p class="text-gray-600 mt-2">A taxa de 11% é aplicada ao salário bruto de todos os trabalhadores por conta de outrem.</p>
+                `;
+        }
+
+        resultDiv.classList.remove("hidden");
+      }
+
+      // Initialize charts when page loads
+      window.addEventListener("load", function () {
+        initCareerChart();
+      });
+
+      function updateChart(bruto, ss, irs, liquido) {
+        const ctx = document.getElementById("salarioChart").getContext("2d");
+
+        if (salarioChart) {
+          salarioChart.destroy();
+        }
+
+        salarioChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["Salário Líquido", "Segurança Social", "IRS"],
+            datasets: [
+              {
+                data: [liquido, ss, irs],
+                backgroundColor: [
+                  "rgb(34, 197, 94)", // Verde para salário líquido
+                  "rgb(239, 68, 68)", // Vermelho para SS
+                  "rgb(234, 179, 8)", // Amarelo para IRS
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  font: {
+                    size: 12,
+                  },
+                },
+              },
+              title: {
+                display: true,
+                text: "Distribuição do Salário",
+                font: {
+                  size: 16,
+                  weight: "bold",
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    const value = context.raw.toFixed(2);
+                    const percentage = ((context.raw / bruto) * 100).toFixed(1);
+                    return `${context.label}: ${value}€ (${percentage}%)`;
+                  },
+                },
+              },
+            },
+            cutout: "60%",
+          },
+        });
+      }
+
+      // Smooth scroll para as âncoras
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const section = document.querySelector(this.getAttribute("href"));
+          if (section) {
+            section.scrollIntoView({
+              behavior: "smooth",
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
